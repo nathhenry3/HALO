@@ -66,6 +66,7 @@ opponentprocess <- function(
     sim_length=4000, # Time length of PKPD simulation, in minutes
     addl=10000, # Number of additional doses to deliver - essentially infinite.
     plot_utility=FALSE, # Whether to calculate the graphs for biophase or not.
+    join_plots=TRUE, # Whether to join plots as subplots or plot them separately
     
     # Set PK/PD constants for C++ code
     k_Dose=10,
@@ -153,10 +154,10 @@ opponentprocess <- function(
       scale_color_manual(values=mycolors) +
       ggtitle(bquote(paste('Dose frequency = ', .(freq)) ~ min^-1)) +
       xlab('Time, t [min]') + {
-        if (isTRUE(all.equal(freq, plot_2[[1]]))) ylab(bquote(paste('Hedonic scale, H'[a*','*b])))# Only create y label if first plot
+        if (isTRUE(all.equal(freq, plot_2[[1]])) | join_plots == FALSE) ylab(bquote(paste('Hedonic scale, H'[a*','*b])))# Only create y label if first plot
       } +
       theme_light() + {
-        if (isTRUE(all.equal(freq, plot_2[[1]]))) { # Only create y label if first plot
+        if (isTRUE(all.equal(freq, plot_2[[1]])) | join_plots == FALSE) { # Only create y label if first plot
           theme(plot.title=element_text(size=9, hjust=0.5, margin=margin(t=0, b=0)),
                 legend.position='none')
         } else {
@@ -219,15 +220,18 @@ bode_plot <- function(
   ..., 
   
   # Set x values for biophase graphs
-  init_freq=0.00025,
+  freq_interval=0.00025,
   multiply=20,
   
   # Set y limit for hormesis graph (integer). If NA, ylim is automatically set
-  gg_ylim=NA
+  gg_ylim=NA,
+  
+  # Join graphs as subplots if TRUE, or plot separately if FALSE
+  join_plots=TRUE
 ) {
   
   # List of dose intervals to pass to opponentprocess()
-  dose_interval <- c(0,  seq(init_freq, init_freq*multiply, init_freq)^-1) 
+  dose_interval <- c(0,  seq(freq_interval, freq_interval*multiply, freq_interval)^-1) 
   
   # Run loop to calculate Bode magnitude plot across range of frequencies
   H_list <- list() # Create list to house graphs of hedonic outcomes vs time
@@ -237,6 +241,7 @@ bode_plot <- function(
     if (i == 1) {
       
       loop_list <- opponentprocess(ii=dose_interval[2], 
+                                   join_plots=join_plots,
                                    ...)
       
       # Create data frame to store wellbeing scores in, based on number of simulations performed
@@ -249,10 +254,12 @@ bode_plot <- function(
       # If second dose interval, then calculate biophase graphs. Otherwise just calculate loop_list to append to bode_data
       loop_list <- opponentprocess(ii=dose_interval[i],
                                    plot_utility=TRUE,
+                                   join_plots=join_plots,
                                    ...)
       utility_plot <- loop_list[[4]]
     } else {
       loop_list <- opponentprocess(ii=dose_interval[i],
+                                   join_plots=join_plots,
                                    ...)
     }
     
@@ -277,19 +284,28 @@ bode_plot <- function(
     theme_light() +
     theme(legend.position='none')
   
-  # Patch pharmacodynamic, temporal, and Bode plots  together with patchwork package, and print
-  tryCatch(bode_patch <- utility_plot / (first(H_list) | last(H_list)) / bode_graph,
-           error=function(e) {
-             warning(e)
-             stop("Error: bode_patch didn't patch together correctly. Double-check that the values in plot_2 are exact multiples of init_freq.")
-           }
-  )
-  suppressWarnings(print(bode_patch))
+  if (join_plots) {
+    # Patch pharmacodynamic, temporal, and Bode plots  together with patchwork package, and print
+    tryCatch(bode_patch <- utility_plot / (first(H_list) | last(H_list)) / bode_graph,
+             error=function(e) {
+               warning(e)
+               stop("Error: bode_patch didn't patch together correctly.")
+             }
+    )
+    suppressWarnings(print(bode_patch))
+  } else {
+    tryCatch({print(utility_plot); print(first(H_list)); print(last(H_list)); print(bode_graph)},
+             error=function(e) {
+               warning(e)
+               stop("Error: plotting failed.")
+             }
+    )
+  }
 }
 
 # Example simulations
 
-bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), Emax_a = 1, Emax_b = 1, k_apk = 0.005, k_bpk = 0.004, init_freq = 0.0006, multiply=20, plot_2=c(0.0006, 0.006))
+bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), Emax_a = 1, Emax_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_2=c(0.0006, 0.006))
 
 
 
