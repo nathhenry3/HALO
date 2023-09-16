@@ -23,20 +23,16 @@ cpp_code <- "
     k_apd = 0,
     k_bpd = 0,
     k_H = 0,
-    
+
     // Pharmacodynamic constants - reset by opponentprocess() function call
-    E0_a = 0,
     Emax_a = 0,
-    EC50_a = 0,
     gamma_a = 0,
-    E0_b = 0,
     Emax_b = 0,
-    EC50_b = 0,
-    gamma_b = 0, 
-    
+    gamma_b = 0,
+
     // Infusion duration
     infuse = 1
-  
+
   $CMT // Model compartments
     Dose, // Hormonal concentration following Digital Behavior
     apk, // a-process pharmacokinetics
@@ -44,17 +40,17 @@ cpp_code <- "
     bpk, // b-process pharmacokinetics
     bpd, // b-process pharmacodynamics
     H // Overall hedonic outcomes
-  
+
   $MAIN // Set additional relationships
     D_Dose = infuse; // Sets the infusion duration for digital behavior compartment
-  
+
   $ODE // Ordinary Differential Equations
     dxdt_Dose = - k_Dose * Dose;
     dxdt_apk = k_Dose * Dose - k_apk * apk;
     dxdt_bpk = k_apk * apk - k_bpk * bpk;
     dxdt_apd = Emax_a * pow(apk, gamma_a) - k_apd * apd;
-    dxdt_bpd = Emax_b * pow(bpk, gamma_b) - k_bpd * bpd;
-    dxdt_H = apd - bpd - k_H * H;
+    dxdt_bpd = - Emax_b * pow(abs(bpk), gamma_b) - k_bpd * bpd;
+    dxdt_H = apd + bpd - k_H * H;
   "
 
 # Compile C++ code
@@ -62,33 +58,29 @@ mod <- mcode('Cppcode', cpp_code)
 
 ### opponentprocess() takes arguments for PK/PD models, creates an mrgsolve compartmental model, and plots the output.
 opponentprocess <- function(
-    ii=100000, # Dosing interval
+    ii=1, # Dosing interval
     sim_length=4000, # Time length of PKPD simulation, in minutes
     addl=10000, # Number of additional doses to deliver - essentially infinite.
     plot_utility=FALSE, # Whether to calculate the graphs for biophase or not.
     join_plots=TRUE, # Whether to join plots as subplots or plot them separately
     
     # Set PK/PD constants for C++ code
-    k_Dose=10,
-    k_apk=0.02,
-    k_bpk=0.004,
+    k_Dose=1, # Higher k_Dose leads to more instantaneous dose release; smaller k_Dose smooths out the curves
+    k_apk=0.01,
+    k_bpk=0.01,
     k_apd=1,
     k_bpd=1,
     k_H=1,
-    E0_a=0,
     Emax_a=1,
-    EC50_a=1,
-    gamma_a=2,
-    E0_b=0,
+    gamma_a=0.5,
     Emax_b=1,
-    EC50_b=3,
-    gamma_b=2,
+    gamma_b=0.7,
     
     # Set infusion duration for drug input
     infuse=1,
     
     ## Set values for a-process, b-process, and double gamma plot datasets to return. These values represent the number of doses that fall within the allocated timeframe 
-    plot_2=c(0.0015, 0.006) # PKPD models for dose frequencies listed in plot_2 are plotted along with their associated Bode plot.
+    plot_2=c(0.0002, 0.004) # PKPD models for dose frequencies listed in plot_2 are plotted along with their associated Bode plot.
 ) { 
   
   # Create data frame of parameters to pass to simulation.
@@ -99,13 +91,9 @@ opponentprocess <- function(
     k_apd=k_apd,
     k_bpd=k_bpd,
     k_H=k_H,
-    E0_a=E0_a,
     Emax_a=Emax_a,
-    EC50_a=EC50_a,
     gamma_a=gamma_a,
-    E0_b=E0_b,
     Emax_b=Emax_b,
-    EC50_b=EC50_b,
     gamma_b=gamma_b,
     infuse=infuse
   ) %>% 
@@ -154,7 +142,7 @@ opponentprocess <- function(
       scale_color_manual(values=mycolors) +
       ggtitle(bquote(paste('Dose frequency = ', .(freq)) ~ min^-1)) +
       xlab('Time, t [min]') + {
-        if (isTRUE(all.equal(freq, plot_2[[1]])) | join_plots == FALSE) ylab(bquote(paste('Hedonic scale, H'[a*','*b])))# Only create y label if first plot
+        if (isTRUE(all.equal(freq, plot_2[[1]])) | join_plots == FALSE) ylab(bquote(paste('Hedonic state, H'[a*','*b])))# Only create y label if first plot
       } +
       theme_light() + {
         if (isTRUE(all.equal(freq, plot_2[[1]])) | join_plots == FALSE) { # Only create y label if first plot
@@ -211,17 +199,14 @@ opponentprocess <- function(
          return(list(AUC_H, freq, plot_2_freq)))
 }
 
-## Example run of function above:
-# opponentprocess(EC50_b=c(8, 6, 4.5, 3))
-
 ### bode_plot() takes opponentprocess() and runs it across a range of dose frequencies, thus allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
 bode_plot <- function(
   # Pass on arguments to opponentprocess()
   ..., 
   
   # Set x values for biophase graphs
-  freq_interval=0.00025,
-  multiply=20,
+  freq_interval=0.0002,
+  multiply=150,
   
   # Set y limit for hormesis graph (integer). If NA, ylim is automatically set
   gg_ylim=NA,
@@ -294,7 +279,10 @@ bode_plot <- function(
     )
     suppressWarnings(print(bode_patch))
   } else {
-    tryCatch({print(utility_plot); print(first(H_list)); print(last(H_list)); print(bode_graph)},
+    tryCatch({
+        print(utility_plot); print(first(H_list)); print(last(H_list)); print(bode_graph);
+        return(invisible(list(utility_plot, first(H_list), last(H_list), bode_graph)))
+      },
              error=function(e) {
                warning(e)
                stop("Error: plotting failed.")
@@ -305,12 +293,24 @@ bode_plot <- function(
 
 # Example simulations
 
-bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), Emax_a = 1, Emax_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_2=c(0.0006, 0.006))
+# bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), Emax_a = 1, Emax_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_2=c(0.0002, 0.006))
+
+
+# Need to change default
+bode_plot()
 
 
 
 
 ### TO DO:
-# Figure out a way to plot dose frequencies separately. I.e., start with low dose frequency and multiply by 10 to get highest dose frequency??
-# Add functions for plotting individual graphs
+# Clean up code!!!!
+# Replace ### with # ----
+# Convert to R package project structure, or create a new project in that structure
+# Create a README.RMD file, which can then be knitted to MD to put on the front page of Github
+# THEN render your page as a website!
+# Create better defaults for running bode_plot()
+# Functionize further
+# Make code more readable
+# Come up with some examples
 # Once all done, use chatgpt to add comments for roxygen etc
+# Also put on OSF
