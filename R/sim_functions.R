@@ -1,12 +1,13 @@
 ### This file is just for testing behavioral stopping - i.e., before environment re-evaluation. 13 Sept 2023. 
 
 ### Setup
-pacman::p_load(tidyverse, mrgsolve, patchwork, latex2exp) # You may need to install some of these packages from GitHub, and may require RTools. Refer to the documentation for remotes::install_github() and https://cran.r-project.org/bin/windows/Rtools/, respectively. 
-## Package versions: 
-# tidyverse = 2.0.0
-# mrgsolve = 1.0.9
-# patchwork = 1.1.2
-# latex2exp = 0.9.6
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(ggplot2)
+library(mrgsolve)
+library(patchwork)
+library(latex2exp)
 
 # Change colour palette for graphs
 mycolors <- c("#08306B", "#2171B5", "#6BAED6", "#9ECAE1")
@@ -80,7 +81,10 @@ opponentprocess <- function(
     infuse=1,
     
     ## Set values for a-process, b-process, and double gamma plot datasets to return. These values represent the number of doses that fall within the allocated timeframe 
-    plot_2=c(0.0002, 0.004) # PKPD models for dose frequencies listed in plot_2 are plotted along with their associated Bode plot.
+    plot_2=c(0.002, 0.008), # PKPD models for dose frequencies listed in plot_2 are plotted along with their associated Bode plot.
+    
+    # If TRUE, print output on state of simulation
+    verbose=TRUE
 ) { 
   
   # Create data frame of parameters to pass to simulation.
@@ -99,10 +103,10 @@ opponentprocess <- function(
   ) %>% 
     rowid_to_column("ID") # Add column of IDs to start of data frame
   
-  if (nrow(idataset) > 4) stop('Number of simulations must be 4 or less. Check idataset') # Stop if number of simulations > 4 
+  if (nrow(idataset) > 4) stop('Number of simulation variants must be 4 or less.') # Stop if number of simulations > 4 
   
   # Print out simulation parameters once
-  if (plot_utility==TRUE) {
+  if (plot_utility & verbose) {
     cat('\nSimulation parameters =\n\n') 
     print(idataset)
   }  
@@ -127,14 +131,16 @@ opponentprocess <- function(
   AUC_H$freq <- freq
   
   # Print results
-  cat(paste('Integral of hedonic graph for simulation', AUC_H$ID, '=', AUC_H$AUC, '\n'))
-  cat(paste('Dose frequency =', freq, 'per min\n\n'))
-  
+  if (verbose) {
+    cat(paste('Integral of hedonic graph for simulation', AUC_H$ID, '=', AUC_H$AUC, '\n'))
+    cat(paste('Dose frequency =', freq, 'per min\n\n'))
+  }
+    
   # If rounded dose frequency value falls within plot_2 list, then return plot of H compartment
   if (isTRUE(all.equal(freq, plot_2[[1]])) | isTRUE(all.equal(freq, plot_2[[2]]))) { # Use all.equal() to check equivalence of floating point numbers
     
     # Plot of H compartment
-    cat('Saving plots for dose frequency above.................\n\n')
+    if (verbose) cat('Saving plots for dose frequency above.................\n\n')
     plot_2_freq <- out@data %>%
       ggplot(aes(x=time, y=H, colour=factor(ID))) +
       geom_hline(yintercept=0, linetype='dashed', color='black') +
@@ -160,7 +166,7 @@ opponentprocess <- function(
   
   ## Create plots for biophase curves for PK -> PD conversion, using biophase equations
   
-  if (plot_utility == TRUE) {
+  if (plot_utility) {
     # Set x axis length with dose_seq, then calculate biophase curves
     utility_data <- tibble(x=seq(-20, 20, 0.1))
     
@@ -194,7 +200,7 @@ opponentprocess <- function(
   ## ------------------------------------------------------------------------------
   
   # Return necessary objects
-  ifelse(plot_utility == TRUE,
+  ifelse(plot_utility,
          return(list(AUC_H, freq, plot_2_freq, utility_graph)),
          return(list(AUC_H, freq, plot_2_freq)))
 }
@@ -212,7 +218,10 @@ bode_plot <- function(
   gg_ylim=NA,
   
   # Join graphs as subplots if TRUE, or plot separately if FALSE
-  join_plots=TRUE
+  join_plots=TRUE,
+  
+  # If TRUE, print output on the state of the simulation
+  verbose=TRUE
 ) {
   
   # List of dose intervals to pass to opponentprocess()
@@ -227,6 +236,7 @@ bode_plot <- function(
       
       loop_list <- opponentprocess(ii=dose_interval[2], 
                                    join_plots=join_plots,
+                                   verbose=verbose,
                                    ...)
       
       # Create data frame to store wellbeing scores in, based on number of simulations performed
@@ -240,11 +250,13 @@ bode_plot <- function(
       loop_list <- opponentprocess(ii=dose_interval[i],
                                    plot_utility=TRUE,
                                    join_plots=join_plots,
+                                   verbose=verbose,
                                    ...)
       utility_plot <- loop_list[[4]]
     } else {
       loop_list <- opponentprocess(ii=dose_interval[i],
                                    join_plots=join_plots,
+                                   verbose=verbose,
                                    ...)
     }
     
@@ -303,14 +315,15 @@ bode_plot()
 
 
 ### TO DO:
-# Clean up code!!!!
+# Change names of variables to fit utility function
+# Add better comments
+# Add roxygen comments for functions
+# Make code more readable
+# Come up with some examples
+# Fix x-axis and y-axis labels (add arb. units)
 # Replace ### with # ----
 # Convert to R package project structure, or create a new project in that structure
 # Create a README.RMD file, which can then be knitted to MD to put on the front page of Github
 # THEN render your page as a website!
-# Create better defaults for running bode_plot()
-# Functionize further
-# Make code more readable
-# Come up with some examples
 # Once all done, use chatgpt to add comments for roxygen etc
 # Also put on OSF
