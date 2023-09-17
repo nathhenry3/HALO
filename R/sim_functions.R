@@ -26,9 +26,8 @@ cpp_code <- "
     k_H = 0,
 
     // Pharmacodynamic constants - reset by opponentprocess() function call
-    Emax_a = 0,
     gamma_a = 0,
-    Emax_b = 0,
+    lambda_b = 0,
     gamma_b = 0,
 
     // Infusion duration
@@ -49,8 +48,8 @@ cpp_code <- "
     dxdt_Dose = - k_Dose * Dose;
     dxdt_apk = k_Dose * Dose - k_apk * apk;
     dxdt_bpk = k_apk * apk - k_bpk * bpk;
-    dxdt_apd = Emax_a * pow(apk, gamma_a) - k_apd * apd;
-    dxdt_bpd = - Emax_b * pow(abs(bpk), gamma_b) - k_bpd * bpd;
+    dxdt_apd = pow(apk, gamma_a) - k_apd * apd;
+    dxdt_bpd = - lambda_b * pow(abs(bpk), gamma_b) - k_bpd * bpd;
     dxdt_H = apd + bpd - k_H * H;
   "
 
@@ -72,9 +71,8 @@ opponentprocess <- function(
     k_apd=1,
     k_bpd=1,
     k_H=1,
-    Emax_a=1,
     gamma_a=0.5,
-    Emax_b=1,
+    lambda_b=1,
     gamma_b=0.7,
     
     # Set infusion duration for drug input
@@ -95,9 +93,8 @@ opponentprocess <- function(
     k_apd=k_apd,
     k_bpd=k_bpd,
     k_H=k_H,
-    Emax_a=Emax_a,
     gamma_a=gamma_a,
-    Emax_b=Emax_b,
+    lambda_b=lambda_b,
     gamma_b=gamma_b,
     infuse=infuse
   ) %>% 
@@ -177,8 +174,8 @@ opponentprocess <- function(
       # Calculate biophase curves
       utility_data <- utility_data %>% 
         mutate({{apd_colname}} := case_when(
-          x >= 0 ~ idataset$Emax_a[i] * x ^ idataset$gamma_a[i],
-          x < 0 ~ -idataset$Emax_b[i] * abs(x) ^ idataset$gamma_b[i])
+          x >= 0 ~ x ^ idataset$gamma_a[i],
+          x < 0 ~ -idataset$lambda_b[i] * abs(x) ^ idataset$gamma_b[i])
         )
     }
 
@@ -305,7 +302,7 @@ bode_plot <- function(
 
 # Example simulations
 
-# bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), Emax_a = 1, Emax_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_2=c(0.0002, 0.006))
+# bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_2=c(0.0002, 0.006))
 
 
 # Need to change default
