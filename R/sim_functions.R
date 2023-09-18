@@ -182,7 +182,7 @@ opponentprocess <- function(
       scale_color_manual(values=mycolors) +
       ggtitle(bquote(paste('Dose frequency = ', .(freq)) ~ min^-1)) +
       xlab('Time, t [min]') + {
-        if (isTRUE(all.equal(freq, plot_frequencies[[1]])) | join_plots == FALSE) ylab(bquote(paste('Hedonic state, H'[a*','*b])))# Only create y label if first plot
+        if (isTRUE(all.equal(freq, plot_frequencies[[1]])) | join_plots == FALSE) ylab(bquote(paste('Hedonic state, H'[a*','*b]*(t), ' [arb. units]'))) # Only create y label if first plot
       } +
       theme_light() + {
         if (isTRUE(all.equal(freq, plot_frequencies[[1]])) | join_plots == FALSE) { # Only create y label if first plot
@@ -230,8 +230,10 @@ opponentprocess <- function(
       theme_light() +
       theme(plot.title=element_text(size=9, hjust=0.5),
             legend.position='none') +
-      ylab('Value') +
-      xlab('Outcome (losses vs gains)')
+      geom_text(aes(x = 17, y = -2, label = "Gain"), hjust = 0) +
+      geom_text(aes(x = -17, y = -2, label = "Loss"), hjust = 1) +
+      ylab('Value [arb. units]') +
+      xlab('Outcome [arb. units]')
   }
   
   ## ------------------------------------------------------------------------------
@@ -355,7 +357,7 @@ bode_plot <- function(
       }
     } +
     xlab(bquote('Dose frequency, f' ~ '[' * min^-1 * ']')) +
-    ylab(bquote(integral(H[a*','*b](t)[total]*dt, 0, t[sim]))) +
+    ylab(bquote(integral(H[a*','*b](t)*dt, 0, t[sim]) ~ '[arb. units]')) +
     theme_light() +
     theme(legend.position='none')
   
@@ -387,12 +389,11 @@ bode_plot <- function(
 
 
 ### TO DO: ----
+# Move cppcode to separate file?
 # Add better comments
 # Add roxygen comments for functions
 # Come up with some examples
-# Fix x-axis and y-axis labels (add arb. units)
-# Replace ### with # ----
-# Create a README.RMD file, which can then be knitted to MD to put on the front page of Github
+# Create a README.RMD file, which can then be knitted to MD to put on the front page of Github, and can be used to create examples for your article
 
 # THEN...
 # Convert to R package project structure, or create a new project in that structure
