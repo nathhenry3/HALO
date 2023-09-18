@@ -1,6 +1,6 @@
-### This file is just for testing behavioral stopping - i.e., before environment re-evaluation. 13 Sept 2023. 
+### This file contains functions for simulating repeated opponent processes using the behavioral posology paradigm, and for using Bode plots to analyze the healthy hormetic limits of behaviors. 
 
-### Setup
+### Setup ----
 library(dplyr)
 library(tibble)
 library(tidyr)
@@ -12,7 +12,7 @@ library(latex2exp)
 # Change colour palette for graphs
 mycolors <- c("#08306B", "#2171B5", "#6BAED6", "#9ECAE1")
 
-### -----
+### ----
 
 # Load in C++ model code
 cpp_code <- "
@@ -55,6 +55,8 @@ cpp_code <- "
 
 # Compile C++ code
 mod <- mcode('Cppcode', cpp_code)
+
+### ----
 
 #' opponentprocess() simulates the opponent process model. It can be run by itself for diagnostic purposes (for example, calculating the area under the hedonic curve, or plotting either the opponent processes or utility function), but in general use this should be called through bode_plot(). 
 #'
@@ -240,9 +242,9 @@ opponentprocess <- function(
          return(list(AUC_H, freq, plot_hedonic)))
 }
 
-### bode_plot() takes opponentprocess() and runs it across a range of dose frequencies, thus allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
-#' This function creates a Bode plot using opponentprocess() for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
-#' This function creates a Bode plot using opponentprocess() for a range of dose frequencies.
+### ----
+
+#' bode_plot() creates a Bode plot using opponentprocess() for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
 #'
 #' @param freq_interval The interval between dose frequencies.
 #' @param multiply A multiplier for the dose frequencies.
@@ -272,6 +274,9 @@ opponentprocess <- function(
 #'
 #' @examples
 #' bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
+#' Example simulations
+#' bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
+#' bode_plot()
 #'
 bode_plot <- function(
   # Pass on arguments to opponentprocess()
@@ -359,35 +364,29 @@ bode_plot <- function(
     tryCatch(bode_patch <- utility_plot / (first(H_list) | last(H_list)) / bode_graph,
              error=function(e) {
                warning(e)
-               stop("Error: bode_patch didn't patch together correctly.")
+               stop("Error: graphs didn't patch together correctly. Check your inputs to bode_plot().")
              }
     )
     suppressWarnings(print(bode_patch))
   } else {
+    # Plot all graphs individually
     tryCatch({
         print(utility_plot); print(first(H_list)); print(last(H_list)); print(bode_graph);
         return(invisible(list(utility_plot, first(H_list), last(H_list), bode_graph)))
       },
              error=function(e) {
                warning(e)
-               stop("Error: plotting failed.")
+               stop("Error: plotting individual graphs failed. Check your inputs to bode_plot().")
              }
     )
   }
 }
 
-# Example simulations
-
-# bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
-
-
-# Need to change default
-bode_plot()
 
 
 
 
-### TO DO:
+### TO DO: ----
 # Add better comments
 # Add roxygen comments for functions
 # Come up with some examples
