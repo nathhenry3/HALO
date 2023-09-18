@@ -120,7 +120,7 @@ opponentprocess <- function(
     plot_hedonic <- out@data %>%
       ggplot(aes(x=time, y=H, colour=factor(ID))) +
       geom_hline(yintercept=0, linetype='dashed', color='black') +
-      geom_line() +
+      geom_line(na.rm=TRUE) +
       scale_color_manual(values=color_scheme(colorscheme)) +
       ggtitle(bquote(paste('Dose frequency = ', .(freq)) ~ min^-1)) +
       xlab('Time, t [min]') + {
@@ -165,7 +165,7 @@ opponentprocess <- function(
     utility_graph <- utility_data %>% 
       pivot_longer(cols=starts_with('apd'), names_to='ID', values_to='Values') %>% 
       ggplot(aes(x=x, y=Values, colour=ID)) +
-      geom_line() + 
+      geom_line(na.rm=TRUE) + 
       geom_hline(yintercept=0, linetype='dashed') +
       geom_vline(xintercept=0, linetype='dashed') +
       scale_color_manual(values=color_scheme(colorscheme)) +
@@ -286,7 +286,7 @@ bode_plot <- function(
   bode_graph <- bode_data %>% 
     ggplot(aes(x=freq, y=AUC, colour=factor(ID))) +
     geom_hline(yintercept=0, linetype='dashed', color='black') + 
-    geom_line() +
+    geom_line(na.rm=TRUE) +
     scale_color_manual(values=color_scheme(colorscheme)) + {
       if (!is.na(gg_ylim)) {
         coord_cartesian(ylim=c(gg_ylim, NA))
@@ -305,7 +305,7 @@ bode_plot <- function(
                stop("Error: graphs didn't patch together correctly. Check your inputs to bode_plot().")
              }
     )
-    suppressWarnings(print(bode_patch))
+    print(bode_patch)
   } else {
     # Plot all graphs individually
     tryCatch({
@@ -325,7 +325,6 @@ bode_plot <- function(
 
 
 ### TO DO: ----
-# Add option to change color_scheme
 # Put cppcode in src folder?? For compiled codes
 # Fix comments for 'multiply' parameter - perhaps replace with something else?
 # Create a README.RMD file, which can then be knitted to MD to put on the front page of Github, and can be used to create examples for your article
