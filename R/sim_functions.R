@@ -6,7 +6,7 @@
 #'
 #' @param ii Dosing interval.
 #' @param sim_length Time length of PKPD simulation, in minutes.
-#' @param addl Number of additional doses to deliver - essentially infinite.
+#' @param addl Number of additional doses to deliver.
 #' @param plot_utility Whether to calculate the graphs for biophase or not.
 #' @param plot_op Whether to plot the graph of opponent processes (Hedonic state, H compartment)
 #' @param join_plots Whether to join plots as subplots or plot them separately.
@@ -23,6 +23,7 @@
 #' @param gamma_b Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.
 #' @param infuse Infusion duration.
 #' @param plot_frequencies # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies. Should be a vector of length 2 - will always plot
+#' @param colorscheme # Sets the color scheme; integer between 1 and 5. 
 #' @param verbose # Print output to console.
 #'
 #' @return A list containing the integral of hedonic outcomes, dose frequency, and optional plots.
@@ -35,15 +36,13 @@
 #' 
 #' @export
 opponentprocess <- function(
-    ii=10000, # Dosing interval
-    sim_length=4000, # Time length of PKPD simulation, in minutes
-    addl=10000, # Number of additional doses to deliver - essentially infinite.
-    plot_utility=FALSE, # Whether to calculate the graphs for biophase or not.
-    plot_op=FALSE, # Whether to plot the graph of opponent processes
-    join_plots=TRUE, # Whether to join plots as subplots or plot them separately
-    
-    # Set PK/PD constants for C++ code
-    k_Dose=1, # Higher k_Dose leads to more instantaneous dose release; smaller k_Dose smooths out the curves
+    ii=10000,
+    sim_length=4000,
+    addl=10000,
+    plot_utility=FALSE,
+    plot_op=FALSE,
+    join_plots=TRUE,
+    k_Dose=1,
     k_apk=0.01,
     k_bpk=0.01,
     k_apd=1,
@@ -53,14 +52,9 @@ opponentprocess <- function(
     gamma_a=0.5,
     lambda_b=1,
     gamma_b=0.7,
-    
-    # Set infusion duration for drug input
     infuse=1,
-    
-    # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies. 
     plot_frequencies=c(0.002, 0.008), 
-    
-    # If TRUE, print output on state of simulation
+    colorscheme=1,
     verbose=TRUE
 ) { 
   # Convert plot_frequencies to vector if it is numeric
@@ -114,7 +108,7 @@ opponentprocess <- function(
   
   # Print results
   if (verbose) {
-    cat(paste('Integral of hedonic compartment values during simulation', AUC_H$ID, '=', AUC_H$AUC, '\n'))
+    cat(paste('Integral of hedonic compartment values during simulation', AUC_H$ID, '=', round(AUC_H$AUC, 1), '\n'))
     cat(paste('Dose frequency =', freq, 'per min\n\n'))
   }
 
@@ -127,7 +121,7 @@ opponentprocess <- function(
       ggplot(aes(x=time, y=H, colour=factor(ID))) +
       geom_hline(yintercept=0, linetype='dashed', color='black') +
       geom_line() +
-      scale_color_manual(values=mycolors) +
+      scale_color_manual(values=color_scheme(colorscheme)) +
       ggtitle(bquote(paste('Dose frequency = ', .(freq)) ~ min^-1)) +
       xlab('Time, t [min]') + {
         if (isTRUE(all.equal(freq, plot_frequencies[[1]])) | join_plots == FALSE) ylab(bquote(paste('Hedonic state, H'[a*','*b]*(t), ' [arb. units]'))) # Only create y label if first plot
@@ -174,7 +168,7 @@ opponentprocess <- function(
       geom_line() + 
       geom_hline(yintercept=0, linetype='dashed') +
       geom_vline(xintercept=0, linetype='dashed') +
-      scale_color_manual(values=mycolors) +
+      scale_color_manual(values=color_scheme(colorscheme)) +
       theme_light() +
       theme(plot.title=element_text(size=9, hjust=0.5),
             legend.position='none') +
@@ -196,7 +190,7 @@ opponentprocess <- function(
 
 #' bode_plot() creates a Bode plot using opponentprocess() for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
 #'
-#' @param freq_interval The interval between dose frequencies.
+#' @param freq_interval The interval between dose frequencies for the Bode plot. Also denotes the lowest frequency plotted.
 #' @param multiply A multiplier for the dose frequencies.
 #' @param gg_ylim Y-axis limit for the Bode graph (optional).
 #' @param join_plots Whether to join graphs as subplots or plot them separately.
@@ -230,23 +224,13 @@ opponentprocess <- function(
 #' 
 #' @export
 bode_plot <- function(
-  # Pass on arguments to opponentprocess()
   ..., 
-  
-  # Set x values for biophase graphs
   freq_interval=0.0002,
   multiply=150,
-  
-  # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies
   plot_frequencies=c(0.002, 0.008),
-  
-  # Set lower y limit for Bode plot (integer). If NA, ylim is automatically set
   gg_ylim=NA,
-  
-  # Join graphs as subplots if TRUE, or plot separately if FALSE
   join_plots=TRUE,
-  
-  # If TRUE, print output on the state of the simulation
+  colorscheme=1,
   verbose=TRUE
 ) {
   
@@ -264,6 +248,7 @@ bode_plot <- function(
                                    join_plots=join_plots,
                                    verbose=verbose,
                                    plot_frequencies=plot_frequencies,
+                                   colorscheme=colorscheme,
                                    ...)
       
       # Create data frame to store wellbeing scores in, based on number of simulations performed
@@ -279,6 +264,7 @@ bode_plot <- function(
                                    join_plots=join_plots,
                                    verbose=verbose,
                                    plot_frequencies=plot_frequencies,
+                                   colorscheme=colorscheme,
                                    ...)
       utility_plot <- loop_list[[4]]
     } else {
@@ -286,6 +272,7 @@ bode_plot <- function(
                                    join_plots=join_plots,
                                    verbose=verbose,
                                    plot_frequencies=plot_frequencies,
+                                   colorscheme=colorscheme,
                                    ...)
     }
     
@@ -300,7 +287,7 @@ bode_plot <- function(
     ggplot(aes(x=freq, y=AUC, colour=factor(ID))) +
     geom_hline(yintercept=0, linetype='dashed', color='black') + 
     geom_line() +
-    scale_color_manual(values=mycolors) + {
+    scale_color_manual(values=color_scheme(colorscheme)) + {
       if (!is.na(gg_ylim)) {
         coord_cartesian(ylim=c(gg_ylim, NA))
       }
@@ -338,12 +325,9 @@ bode_plot <- function(
 
 
 ### TO DO: ----
-# Add better comments
+# Add option to change color_scheme
 # Put cppcode in src folder?? For compiled codes
-# Give it an option to set the color scheme
 # Fix comments for 'multiply' parameter - perhaps replace with something else?
-# Add roxygen comments for functions
-# Come up with some examples
 # Create a README.RMD file, which can then be knitted to MD to put on the front page of Github, and can be used to create examples for your article
 # Write some test functions??
 
