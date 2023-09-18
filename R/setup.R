@@ -5,7 +5,6 @@ library(tidyr)
 library(ggplot2)
 library(mrgsolve)
 library(patchwork)
-library(latex2exp)
 
 # Change colour palette for graphs
 mycolors <- c("#08306B", "#2171B5", "#6BAED6", "#9ECAE1")

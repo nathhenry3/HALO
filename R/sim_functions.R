@@ -12,14 +12,15 @@
 #' @param join_plots Whether to join plots as subplots or plot them separately.
 #'
 #' @param k_Dose Clearance rate for compartments.
-#' @param k_apk Clearance rate for a-process pharmacokinetics.
-#' @param k_bpk Clearance rate for b-process pharmacokinetics.
-#' @param k_apd Clearance rate for a-process pharmacodynamics.
-#' @param k_bpd Clearance rate for b-process pharmacodynamics.
-#' @param k_H Clearance rate for overall hedonic outcomes.
-#' @param gamma_a Pharmacodynamic constant for the a-process.
-#' @param lambda_b Pharmacodynamic constant for the b-process.
-#' @param gamma_b Pharmacodynamic constant for the b-process.
+#' @param k_apk a-process pharmacokinetic clearance rate.
+#' @param k_bpk b-process pharmacokinetic clearance rate.
+#' @param k_apd a-process pharmacodynamic clearance rate.
+#' @param k_bpd b-process pharmacodynamic clearance rate.
+#' @param k_H Clearance rate for hedonic pharmacodynamic compartment.
+#' @param lambda_a Pharmacodynamic constant for a-process magnitude, based on Kahneman/Tversky's utility function.
+#' @param gamma_a Pharmacodynamic constant for a-process curvature, based on Kahneman/Tversky's utility function.
+#' @param lambda_b Pharmacodynamic constant for b-process magnitude, based on Kahneman/Tversky's utility function.
+#' @param gamma_b Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.
 #' @param infuse Infusion duration.
 #' @param plot_frequencies # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies. Should be a vector of length 2 - will always plot
 #' @param verbose # Print output to console.
@@ -28,7 +29,7 @@
 #'
 #' @examples
 #' opponentprocess() # Default parameters
-#' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=TRUE) # Default parameters
+#' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=TRUE) # Default parameters
 #' opponentprocess(plot_utility=TRUE) # Plots utility function
 #' opponentprocess(plot_op=TRUE) # Plots hedonic compartment values (opponent processes)
 #'
@@ -47,6 +48,7 @@ opponentprocess <- function(
     k_apd=1,
     k_bpd=1,
     k_H=1,
+    lambda_a=1,
     gamma_a=0.5,
     lambda_b=1,
     gamma_b=0.7,
@@ -74,6 +76,7 @@ opponentprocess <- function(
     k_apd=k_apd,
     k_bpd=k_bpd,
     k_H=k_H,
+    lambda_a=lambda_a,
     gamma_a=gamma_a,
     lambda_b=lambda_b,
     gamma_b=gamma_b,
@@ -110,7 +113,7 @@ opponentprocess <- function(
   
   # Print results
   if (verbose) {
-    cat(paste('Integral of hedonic graph for simulation', AUC_H$ID, '=', AUC_H$AUC, '\n'))
+    cat(paste('Integral of hedonic compartment values during simulation', AUC_H$ID, '=', AUC_H$AUC, '\n'))
     cat(paste('Dose frequency =', freq, 'per min\n\n'))
   }
 
@@ -158,7 +161,7 @@ opponentprocess <- function(
       # Calculate biophase curves
       utility_data <- utility_data %>% 
         mutate({{apd_colname}} := case_when(
-          x >= 0 ~ x ^ idataset$gamma_a[i],
+          x >= 0 ~ idataset$lambda_a[i] * x ^ idataset$gamma_a[i],
           x < 0 ~ -idataset$lambda_b[i] * abs(x) ^ idataset$gamma_b[i])
         )
     }
@@ -205,24 +208,24 @@ opponentprocess <- function(
 #' @param plot_frequencies # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies.
 #'
 #' @param k_Dose Parameter for opponentprocess(): Clearance rates for compartments.
-#' @param k_apk Parameter for opponentprocess(): a-process pharmacokinetics.
-#' @param k_bpk Parameter for opponentprocess(): b-process pharmacokinetics.
-#' @param k_apd Parameter for opponentprocess(): a-process pharmacodynamics.
-#' @param k_bpd Parameter for opponentprocess(): b-process pharmacodynamics.
-#' @param k_H Parameter for opponentprocess(): Overall hedonic outcomes.
-#' @param gamma_a Parameter for opponentprocess(): Pharmacodynamic constant.
-#' @param lambda_b Parameter for opponentprocess(): Pharmacodynamic constant.
-#' @param gamma_b Parameter for opponentprocess(): Pharmacodynamic constant.
+#' @param k_apk Parameter for opponentprocess(): a-process pharmacokinetic clearance rate.
+#' @param k_bpk Parameter for opponentprocess(): b-process pharmacokinetic clearance rate.
+#' @param k_apd Parameter for opponentprocess(): a-process pharmacodynamic clearance rate.
+#' @param k_bpd Parameter for opponentprocess(): b-process pharmacodynamic clearance rate.
+#' @param k_H Parameter for opponentprocess(): Clearance rate for hedonic pharmacodynamic compartment.
+#' @param lambda_a Parameter for opponentprocess(): Pharmacodynamic constant for a-process magnitude, based on Kahneman/Tversky's utility function.
+#' @param gamma_a Parameter for opponentprocess(): Pharmacodynamic constant for a-process curvature, based on Kahneman/Tversky's utility function.
+#' @param lambda_b Parameter for opponentprocess(): Pharmacodynamic constant for b-process magnitude, based on Kahneman/Tversky's utility function.
+#' @param gamma_b Parameter for opponentprocess(): Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.
 #' @param infuse Parameter for opponentprocess(): Infusion duration.
 #' @param verbose # Print output to console.
 #'
 #' @return A Bode magnitude plot.
 #'
 #' @examples
-#' bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
-#' Example simulations
-#' bode_plot(gamma_a=0.2, gamma_b=c(0.5, 0.7), lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
 #' bode_plot()
+#' bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
+#' bode_plot(ylim=)
 #'
 bode_plot <- function(
   # Pass on arguments to opponentprocess()
@@ -235,7 +238,7 @@ bode_plot <- function(
   # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies
   plot_frequencies=c(0.002, 0.008),
   
-  # Set y limit for hormesis graph (integer). If NA, ylim is automatically set
+  # Set lower y limit for Bode plot (integer). If NA, ylim is automatically set
   gg_ylim=NA,
   
   # Join graphs as subplots if TRUE, or plot separately if FALSE
@@ -333,14 +336,16 @@ bode_plot <- function(
 
 
 ### TO DO: ----
-# Move cppcode to separate file?
 # Add better comments
+# Give it an option to set the color scheme
+# Fix comments for 'multiply' parameter - perhaps replace with something else?
 # Add roxygen comments for functions
 # Come up with some examples
 # Create a README.RMD file, which can then be knitted to MD to put on the front page of Github, and can be used to create examples for your article
 # Write some test functions??
 
 # THEN...
+# Start here: https://ourcodingclub.github.io/tutorials/writing-r-package/
 # Convert to R package project structure, or create a new project in that structure
 # THEN render your page as a website!
 # Once all done, use chatgpt to add comments for roxygen etc
