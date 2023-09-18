@@ -32,7 +32,8 @@
 #' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=TRUE) # Default parameters
 #' opponentprocess(plot_utility=TRUE) # Plots utility function
 #' opponentprocess(plot_op=TRUE) # Plots hedonic compartment values (opponent processes)
-#'
+#' 
+#' @export
 opponentprocess <- function(
     ii=10000, # Dosing interval
     sim_length=4000, # Time length of PKPD simulation, in minutes
@@ -226,7 +227,8 @@ opponentprocess <- function(
 #' bode_plot()
 #' bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
 #' bode_plot(ylim=)
-#'
+#' 
+#' @export
 bode_plot <- function(
   # Pass on arguments to opponentprocess()
   ..., 
@@ -337,6 +339,7 @@ bode_plot <- function(
 
 ### TO DO: ----
 # Add better comments
+# Put cppcode in src folder?? For compiled codes
 # Give it an option to set the color scheme
 # Fix comments for 'multiply' parameter - perhaps replace with something else?
 # Add roxygen comments for functions
