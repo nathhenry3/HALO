@@ -1,26 +1,45 @@
 ---
-title: "README"
 author: "Nathan Henry"
 format: gfm
 ---
 
-## Quarto
+The *bpos* package contains...
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+# Testing out JUST PK alterations. Can STILL ACHIEVE HORMESIS??
 
 ```{r}
-1 + 1
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 600
+
+bode_plot(EC50_b = c(0.8, 0.9, 1, 1.1), k_bpk = 0.02, seq_2 = 0.08, plot_2 = c(0.0015, 0.08))
+
 ```
 
-You can add options to executable code like this 
+# Work on a combined figure leading up to final hormetic eigenvector
 
 ```{r}
-#| echo: false
-2 * 2
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(EC50_b=c(2.1, 2.8, 3.5, 4.2), seq_1=0.00025, sim_length=4000, gg_ylim=-500, meta_curve=TRUE)
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+# Repeat, but show that modifying a-process does little to shift hormetic curve
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(EC50_a=c(0.6, 0.8, 1.1, 1.5), seq_1=0.00025, sim_length=4000, gg_ylim=-500, meta_curve=TRUE)
+
+```
