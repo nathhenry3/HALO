@@ -238,16 +238,31 @@ opponentprocess <- function(
 #' 
 #' @export
 bode_plot <- function(
-  ..., 
-  freq_interval=0.0002,
-  multiply=150,
-  plot_frequencies=c(0.002, 0.008),
-  gg_ylim=NA,
-  join_plots=TRUE,
-  colorscheme=1,
-  verbose=FALSE
+    freq_interval=0.0002,
+    multiply=150,
+    plot_frequencies=c(0.002, 0.008),
+    gg_ylim=NA,
+    join_plots=TRUE,
+    colorscheme=1,
+    verbose=FALSE,
+    ii = 10000,
+    sim_length = 4000,
+    addl = 10000,
+    plot_utility = FALSE,
+    join_plots_opponent = TRUE,
+    k_Dose = 1,
+    k_apk = 0.01,
+    k_bpk = 0.01,
+    k_apd = 1,
+    k_bpd = 1,
+    k_H = 1,
+    lambda_a = 1,
+    gamma_a = 0.5,
+    lambda_b = 1,
+    gamma_b = 0.7,
+    infuse = 1
 ) {
-  print('Running simulation, please wait...')
+  cat('Running simulation, please wait...\n\n')
   
   # List of dose intervals to pass to opponentprocess()
   dose_interval <- c(0,  seq(freq_interval, freq_interval*multiply, freq_interval)^-1) 
@@ -259,36 +274,72 @@ bode_plot <- function(
     # If first dose interval, then set up bode_data data frame
     if (i == 1) {
       
-      loop_list <- opponentprocess(ii=dose_interval[2], 
-                                   join_plots=join_plots,
-                                   verbose=verbose,
-                                   plot_frequencies=plot_frequencies,
-                                   colorscheme=colorscheme,
-                                   ...)
+      loop_list <- opponentprocess(
+        ii = dose_interval[2],
+        join_plots = join_plots_opponent,
+        verbose = verbose,
+        plot_frequencies = plot_frequencies,
+        colorscheme = colorscheme,
+        k_Dose = k_Dose,
+        k_apk = k_apk,
+        k_bpk = k_bpk,
+        k_apd = k_apd,
+        k_bpd = k_bpd,
+        k_H = k_H,
+        lambda_a = lambda_a,
+        gamma_a = gamma_a,
+        lambda_b = lambda_b,
+        gamma_b = gamma_b,
+        infuse = infuse
+      )
       
-      # Create data frame to store wellbeing scores in, based on number of simulations performed
+      # Create data frame to store wellbeing scores in, based on the number of simulations performed
       bode_data <- tibble(
         'ID' = 1:nrow(loop_list[[1]]), # ID of each mrgsolve simulation
         'AUC' = rep(0, nrow(loop_list[[1]])), # AUC scores for H compartment graphs
         'freq' = rep(0, nrow(loop_list[[1]])) # Dose frequency
       )
     } else if (i == 2) {
-      # If second dose interval, then calculate biophase graphs. Otherwise just calculate loop_list to append to bode_data
-      loop_list <- opponentprocess(ii=dose_interval[i],
-                                   plot_utility=TRUE,
-                                   join_plots=join_plots,
-                                   verbose=verbose,
-                                   plot_frequencies=plot_frequencies,
-                                   colorscheme=colorscheme,
-                                   ...)
+      # If the second dose interval, then calculate biophase graphs. Otherwise just calculate loop_list to append to bode_data
+      loop_list <- opponentprocess(
+        ii = dose_interval[i],
+        plot_utility = TRUE,
+        join_plots = join_plots_opponent,
+        verbose = verbose,
+        plot_frequencies = plot_frequencies,
+        colorscheme = colorscheme,
+        k_Dose = k_Dose,
+        k_apk = k_apk,
+        k_bpk = k_bpk,
+        k_apd = k_apd,
+        k_bpd = k_bpd,
+        k_H = k_H,
+        lambda_a = lambda_a,
+        gamma_a = gamma_a,
+        lambda_b = lambda_b,
+        gamma_b = gamma_b,
+        infuse = infuse
+      )
       utility_plot <- loop_list[[4]]
     } else {
-      loop_list <- opponentprocess(ii=dose_interval[i],
-                                   join_plots=join_plots,
-                                   verbose=verbose,
-                                   plot_frequencies=plot_frequencies,
-                                   colorscheme=colorscheme,
-                                   ...)
+      loop_list <- opponentprocess(
+        ii = dose_interval[i],
+        join_plots = join_plots_opponent,
+        verbose = verbose,
+        plot_frequencies = plot_frequencies,
+        colorscheme = colorscheme,
+        k_Dose = k_Dose,
+        k_apk = k_apk,
+        k_bpk = k_bpk,
+        k_apd = k_apd,
+        k_bpd = k_bpd,
+        k_H = k_H,
+        lambda_a = lambda_a,
+        gamma_a = gamma_a,
+        lambda_b = lambda_b,
+        gamma_b = gamma_b,
+        infuse = infuse
+      )
     }
     
     # Append AUC scores (hedonic outcomes) and dose frequencies, and store H compartment graphs
@@ -340,7 +391,6 @@ bode_plot <- function(
 
 
 ### TO DO: ----
-# Fix comments for 'multiply' parameter - perhaps replace with something else?
 # Make '...' parameters explicit in bode_plot()
 # Create a README.RMD file, which can then be knitted to MD to put on the front page of Github, and can be used to create examples for your article
 # Write some test functions??

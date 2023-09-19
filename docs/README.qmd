@@ -57,7 +57,18 @@ You can test how varying parameters in the utility function affects the opponent
 
 ```
 
-.....................................
+You can choose to plot different frequencies:
+
+```{r}
+
+```
+
+You can also extend the Bode plot:
+
+```{r}
+
+```
+
 
 For more usage examples and detailed explanations, please refer to the package documentation by using the 'help()' function in R. 
 
