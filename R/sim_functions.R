@@ -60,7 +60,7 @@ opponentprocess <- function(
     lambda_b=2,
     gamma_b=0.7,
     infuse=1,
-    plot_frequencies=c(0.002, 0.008), 
+    plot_frequencies=c(0.002, 0.006), 
     colorscheme=1,
     verbose=FALSE
 ) { 
@@ -154,7 +154,7 @@ opponentprocess <- function(
   
   if (plot_utility) {
     # Set x axis length with dose_seq, then calculate biophase curves
-    utility_data <- tibble(x=seq(-20, 20, 0.1))
+    utility_data <- tibble(x=seq(-10, 10, 0.01))
     
     for (i in 1:nrow(idataset)) { # Calculate biophase curve for each set of parameters
       # Create column name for biophase curve based on ID number
@@ -240,7 +240,7 @@ opponentprocess <- function(
 bode_plot <- function(
     freq_interval=0.0002,
     multiply=150,
-    plot_frequencies=c(0.002, 0.008),
+    plot_frequencies=c(0.002, 0.006),
     gg_ylim=NA,
     join_plots=TRUE,
     colorscheme=1,
@@ -261,7 +261,7 @@ bode_plot <- function(
     gamma_b = 0.7,
     infuse = 1
 ) {
-  cat('Running simulation, please wait...\n\n')
+  cat('Running simulation, please wait. (If the simulation takes too long, try using a smaller value for sim_length)\n\n')
   
   # List of dose intervals to pass to opponentprocess()
   dose_interval <- c(0,  seq(freq_interval, freq_interval*multiply, freq_interval)^-1) 

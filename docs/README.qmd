@@ -13,6 +13,7 @@ You can install the bpos package by running the following code in R or RStudio:
 ```{r}
 
 # install.packages("bpos")
+# library(bpos)
 ## REPLACE WITH GITHUB NAME
 
 ```
@@ -46,7 +47,7 @@ bode_plot(join_plots=FALSE)
 
 ```
 
-You can test how varying parameters in the utility function affects the opponent processes, and in turn affects the hormetic curve. For example, you can increase the b-process curvature:
+You can test how varying parameters in the utility function affects the opponent processes, and in turn affects the hormetic curve. For example, you can increase the b-process curvature in the utility function:
 
 ```{r}
 #| fig-width: 9
@@ -55,25 +56,124 @@ You can test how varying parameters in the utility function affects the opponent
 #| results: 'hide'
 #| fig-dpi: 300
 
+bode_plot(gamma_b=c(0.7, 0.9, 1.1))
+
 ```
 
-You can choose to plot different frequencies:
+Or increase the magnitude of the loss side of the utility function:
 
 ```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(lambda_b=c(2, 2.5, 3))
+
+```
+
+You can also modify the a-process curvature in the utility function:
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(gamma_a=c(0.5, 0.7, 0.9), colorscheme=2)
+
+```
+
+Or increase the magnitude of the gain side of the utility function:
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(lambda_b=c(1, 1.5, 2), colorscheme=2)
+
+```
+
+You can modify the pharmacodynamic decay constant for the a-process:
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(k_apd=c(0.5, 1, 1.5), colorscheme=3)
+
+```
+
+Or modify the pharmacodynamic decay constant for the b-process:
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(k_bpd=c(1.5, 2, 2.5), colorscheme=3)
+
+```
+
+Likewise, you can modify the pharmacokinetic decay constant for the a-process:
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(k_apk=c(0.01, 0.02, 0.03), colorscheme=4)
+
+```
+
+Or modify the pharmacokinetic decay constant for the b-process:
+
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+bode_plot(k_bpk=c(0.01, 0.02, 0.03), colorscheme=4)
 
 ```
 
 You can also extend the Bode plot:
 
 ```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+
 
 ```
 
-You can also cut off behaviors at a certain point:
+You can also cut off behaviors at a certain point, so that they stay within the hormetic limit:
 
 ```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
 
-bode_plot(addl = 5)
+bode_plot(addl = 40)
 
 ```
 
@@ -82,46 +182,3 @@ For more usage examples and detailed explanations, please refer to the package d
 ## License
 
 This package is released under the MIT License.
-
-
-
-
-
-<!-- # Testing out JUST PK alterations. Can STILL ACHIEVE HORMESIS?? -->
-
-<!-- ```{r} -->
-<!-- #| fig-width: 9 -->
-<!-- #| fig-height: 12 -->
-<!-- #| warning: false -->
-<!-- #| results: 'hide' -->
-<!-- #| fig-dpi: 600 -->
-
-<!-- bode_plot(EC50_b = c(0.8, 0.9, 1, 1.1), k_bpk = 0.02, seq_2 = 0.08, plot_2 = c(0.0015, 0.08)) -->
-
-<!-- ``` -->
-
-<!-- # Work on a combined figure leading up to final hormetic eigenvector -->
-
-<!-- ```{r} -->
-<!-- #| fig-width: 9 -->
-<!-- #| fig-height: 12 -->
-<!-- #| warning: false -->
-<!-- #| results: 'hide' -->
-<!-- #| fig-dpi: 300 -->
-
-<!-- bode_plot(EC50_b=c(2.1, 2.8, 3.5, 4.2), seq_1=0.00025, sim_length=4000, gg_ylim=-500, meta_curve=TRUE) -->
-
-<!-- ``` -->
-
-<!-- # Repeat, but show that modifying a-process does little to shift hormetic curve -->
-
-<!-- ```{r} -->
-<!-- #| fig-width: 9 -->
-<!-- #| fig-height: 12 -->
-<!-- #| warning: false -->
-<!-- #| results: 'hide' -->
-<!-- #| fig-dpi: 300 -->
-
-<!-- bode_plot(EC50_a=c(0.6, 0.8, 1.1, 1.5), seq_1=0.00025, sim_length=4000, gg_ylim=-500, meta_curve=TRUE) -->
-
-<!-- ``` -->
