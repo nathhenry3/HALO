@@ -37,7 +37,7 @@
 #'
 #' @examples
 #' opponentprocess() # Default parameters
-#' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=TRUE) # Default parameters
+#' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=FALSE) # Default parameters
 #' opponentprocess(plot_utility=TRUE) # Plots utility function
 #' opponentprocess(plot_op=TRUE) # Plots hedonic compartment values (opponent processes)
 #' 
@@ -62,7 +62,7 @@ opponentprocess <- function(
     infuse=1,
     plot_frequencies=c(0.002, 0.008), 
     colorscheme=1,
-    verbose=TRUE
+    verbose=FALSE
 ) { 
   # Convert plot_frequencies to vector if it is numeric
   if (length(plot_frequencies) == 1) {
@@ -245,8 +245,9 @@ bode_plot <- function(
   gg_ylim=NA,
   join_plots=TRUE,
   colorscheme=1,
-  verbose=TRUE
+  verbose=FALSE
 ) {
+  print('Running simulation, please wait...')
   
   # List of dose intervals to pass to opponentprocess()
   dose_interval <- c(0,  seq(freq_interval, freq_interval*multiply, freq_interval)^-1) 
@@ -340,12 +341,14 @@ bode_plot <- function(
 
 ### TO DO: ----
 # Fix comments for 'multiply' parameter - perhaps replace with something else?
+# Make '...' parameters explicit in bode_plot()
 # Create a README.RMD file, which can then be knitted to MD to put on the front page of Github, and can be used to create examples for your article
 # Write some test functions??
 
 # THEN...
 # Start here: https://ourcodingclub.github.io/tutorials/writing-r-package/
 # Convert to R package project structure, or create a new project in that structure
+# Change to MIT license
 # THEN render your page as a website??
 # Also put on OSF
 

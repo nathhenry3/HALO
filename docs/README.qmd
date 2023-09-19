@@ -2,65 +2,64 @@
 format: gfm
 ---
 
-# Your Package Name
+# BPos
 
 This R package provides functions for simulating repeated opponent processes using the behavioral posology paradigm and for using Bode plots to analyze the healthy hormetic limits of behaviors.
 
 ## Installation
 
-You can install this package from CRAN using the following R command:
+You can install the bpos package by running the following code in R or RStudio:
 
 ```{r}
-# install.packages("bpos")
 
+# install.packages("bpos")
 ## REPLACE WITH GITHUB NAME
+
 ```
 
 ## Usage
 ### Simulating Opponent Processes
 
-To simulate opponent processes using the opponentprocess() function, you can use the following code:
-
-```{r}
-
-# library(your_package_name)
-# 
-# # Simulate opponent processes with default parameters
-# opponentprocess()
-# 
-# # Simulate opponent processes with custom parameters
-# opponentprocess(ii = 10, sim_length = 4000, addl = 10000, plot_utility = FALSE)
-
-```
-
-## Creating Bode Plots
-
 You can create Bode plots using the bode_plot() function as follows:
 
 ```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
 
-# # library(your_package_name)
-# 
-# # Create a Bode plot with default parameters
-# bode_plot()
-# 
-# # Create a Bode plot with custom parameters
-# bode_plot(freq_interval = 0.0002, multiply = 40)
+bode_plot()
 
 ```
 
-## Function Details
-### opponentprocess()
+You can also plot the graphs individually:
 
-The opponentprocess() function simulates opponent processes. It takes various parameters, including ii (dosing interval), sim_length (time length of simulation), and others. You can customize the simulation by adjusting these parameters.
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
 
-### bode_plot()
+bode_plot(join_plots=FALSE)
 
-The bode_plot() function creates a Bode plot using the opponentprocess() function for a range of dose frequencies. You can specify the freq_interval and multiply parameters to control the range of frequencies to plot.
+```
 
-For more details on function parameters and usage, please refer to the package documentation by using the 'help()' function in R. 
+You can test how varying parameters in the utility function affects the opponent processes, and in turn affects the hormetic curve. For example, you can increase the b-process curvature:
 
-For more usage examples and detailed explanations, please check the package vignettes and documentation.
+```{r}
+#| fig-width: 9
+#| fig-height: 12
+#| warning: false
+#| results: 'hide'
+#| fig-dpi: 300
+
+```
+
+.....................................
+
+For more usage examples and detailed explanations, please refer to the package documentation by using the 'help()' function in R. 
 
 ## License
 
