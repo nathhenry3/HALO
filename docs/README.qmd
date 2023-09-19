@@ -69,6 +69,13 @@ You can also extend the Bode plot:
 
 ```
 
+You can also cut off behaviors at a certain point:
+
+```{r}
+
+bode_plot(addl = 5)
+
+```
 
 For more usage examples and detailed explanations, please refer to the package documentation by using the 'help()' function in R. 
 
