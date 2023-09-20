@@ -76,7 +76,7 @@ opponentprocess() simulates the opponent process model. It can be run by itself 
 }
 \examples{
 opponentprocess() # Default parameters
-opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=FALSE) # Default parameters
+opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=2, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=2, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002, 0.006), verbose=FALSE) # Default parameters
 opponentprocess(plot_utility=TRUE) # Plots utility function
 opponentprocess(plot_op=TRUE) # Plots hedonic compartment values (opponent processes)
 

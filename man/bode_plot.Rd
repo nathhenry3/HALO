@@ -38,49 +38,50 @@ bode_plot(
 
 \item{gg_ylim}{Y-axis limit for the Bode graph (optional).}
 
-\item{join_plots}{Whether to join plots as subplots or plot them separately in opponentprocess().}
+\item{join_plots}{Whether to join plots as subplots or plot them separately.}
 
 \item{verbose}{# Print output to console.}
 
-\item{ii}{Dosing interval for opponentprocess().}
+\item{ii}{Dosing interval.}
 
-\item{sim_length}{Time length of PKPD simulation for opponentprocess(), in minutes.}
+\item{sim_length}{Time length of PKPD simulation, in minutes.}
 
-\item{addl}{Number of additional doses for opponentprocess() - essentially infinite.}
+\item{addl}{Number of additional doses - essentially infinite.}
 
-\item{plot_utility}{Whether to calculate the graphs for biophase for opponentprocess() or not.}
+\item{plot_utility}{Whether to calculate the graphs for biophase or not.}
 
-\item{k_Dose}{Parameter for opponentprocess(): Clearance rates for compartments.}
+\item{k_Dose}{Clearance rates for compartments.}
 
-\item{k_apk}{Parameter for opponentprocess(): a-process pharmacokinetic clearance rate.}
+\item{k_apk}{a-process pharmacokinetic clearance rate.}
 
-\item{k_bpk}{Parameter for opponentprocess(): b-process pharmacokinetic clearance rate.}
+\item{k_bpk}{b-process pharmacokinetic clearance rate.}
 
-\item{k_apd}{Parameter for opponentprocess(): a-process pharmacodynamic clearance rate.}
+\item{k_apd}{a-process pharmacodynamic clearance rate.}
 
-\item{k_bpd}{Parameter for opponentprocess(): b-process pharmacodynamic clearance rate.}
+\item{k_bpd}{b-process pharmacodynamic clearance rate.}
 
-\item{k_H}{Parameter for opponentprocess(): Clearance rate for hedonic pharmacodynamic compartment.}
+\item{k_H}{Clearance rate for hedonic pharmacodynamic compartment.}
 
-\item{lambda_a}{Parameter for opponentprocess(): Pharmacodynamic constant for a-process magnitude, based on Kahneman/Tversky's utility function.}
+\item{lambda_a}{Pharmacodynamic constant for a-process magnitude, based on Kahneman/Tversky's utility function.}
 
-\item{gamma_a}{Parameter for opponentprocess(): Pharmacodynamic constant for a-process curvature, based on Kahneman/Tversky's utility function.}
+\item{gamma_a}{Pharmacodynamic constant for a-process curvature, based on Kahneman/Tversky's utility function.}
 
-\item{lambda_b}{Parameter for opponentprocess(): Pharmacodynamic constant for b-process magnitude, based on Kahneman/Tversky's utility function.}
+\item{lambda_b}{Pharmacodynamic constant for b-process magnitude, based on Kahneman/Tversky's utility function.}
 
-\item{gamma_b}{Parameter for opponentprocess(): Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.}
+\item{gamma_b}{Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.}
 
-\item{infuse}{Parameter for opponentprocess(): Infusion duration.}
+\item{infuse}{Infusion duration.}
 }
 \value{
 A Bode magnitude plot.
 }
 \description{
-bode_plot() creates a Bode plot using opponentprocess() for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic.
+bode_plot() creates a Bode plot for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic.
 }
 \examples{
 bode_plot()
-bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
-bode_plot(ylim=)
+bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 2, k_apk = 0.01, k_bpk = 0.01, k_apd = 1, k_bpd = 2, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006)) # Compare multiple parameterizations
+bode_plot(gg_ylim=-500) # Change lower y limit for Bode plot
+bode_plot(join_plots=FALSE) # Plot graphs separately
 
 }

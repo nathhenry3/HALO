@@ -39,7 +39,7 @@
 #'
 #' @examples
 #' opponentprocess() # Default parameters
-#' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=0.01, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=1, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002), verbose=FALSE) # Default parameters
+#' opponentprocess(ii=10, sim_length=4000, addl=10000, plot_utility=FALSE, join_plots=TRUE, k_Dose=1, k_apk=0.01, k_bpk=0.01, k_apd=1, k_bpd=2, k_H=1, lambda_a=1, gamma_a=0.5, lambda_b=2, gamma_b=0.7, infuse=1, plot_frequencies=c(0.002, 0.006), verbose=FALSE) # Default parameters
 #' opponentprocess(plot_utility=TRUE) # Plots utility function
 #' opponentprocess(plot_op=TRUE) # Plots hedonic compartment values (opponent processes)
 #' 
@@ -237,8 +237,9 @@ opponentprocess <- function(
 #'
 #' @examples
 #' bode_plot()
-#' bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
-#' bode_plot(ylim=-500)
+#' bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 2, k_apk = 0.01, k_bpk = 0.01, k_apd = 1, k_bpd = 2, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006)) # Compare multiple parameterizations
+#' bode_plot(gg_ylim=-500) # Change lower y limit for Bode plot
+#' bode_plot(join_plots=FALSE) # Plot graphs separately
 #' 
 #' @export
 bode_plot <- function(
