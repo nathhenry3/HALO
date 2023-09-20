@@ -2,6 +2,8 @@
 
 ### ----
 
+#' opponentprocess()
+#' 
 #' opponentprocess() simulates the opponent process model. It can be run by itself for diagnostic purposes (for example, calculating the area under the hedonic curve, or plotting either the opponent processes or utility function), but in general use this should be called through bode_plot(). 
 #'
 #' @import dplyr
@@ -179,8 +181,8 @@ opponentprocess <- function(
       theme_light() +
       theme(plot.title=element_text(size=9, hjust=0.5),
             legend.position='none') +
-      geom_text(aes(x = 17, y = -2, label = "Gain"), hjust = 0) +
-      geom_text(aes(x = -17, y = -2, label = "Loss"), hjust = 1) +
+      geom_text(aes(x = 8.5, y = -2, label = "Gain"), hjust = 0) +
+      geom_text(aes(x = -8.5, y = -2, label = "Loss"), hjust = 1) +
       ylab('Value [arb. units]') +
       xlab('Outcome [arb. units]')
   }
@@ -195,7 +197,9 @@ opponentprocess <- function(
 
 ### ----
 
-#' bode_plot() creates a Bode plot using opponentprocess() for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
+#' bode_plot()
+#'
+#' bode_plot() creates a Bode plot for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic. 
 #'
 #' @import dplyr
 #' @import tibble
@@ -209,24 +213,24 @@ opponentprocess <- function(
 #' @param gg_ylim Y-axis limit for the Bode graph (optional).
 #' @param join_plots Whether to join graphs as subplots or plot them separately.
 #'
-#' @param ii Dosing interval for opponentprocess().
-#' @param sim_length Time length of PKPD simulation for opponentprocess(), in minutes.
-#' @param addl Number of additional doses for opponentprocess() - essentially infinite.
-#' @param plot_utility Whether to calculate the graphs for biophase for opponentprocess() or not.
-#' @param join_plots Whether to join plots as subplots or plot them separately in opponentprocess().
+#' @param ii Dosing interval.
+#' @param sim_length Time length of PKPD simulation, in minutes.
+#' @param addl Number of additional doses - essentially infinite.
+#' @param plot_utility Whether to calculate the graphs for biophase or not.
+#' @param join_plots Whether to join plots as subplots or plot them separately.
 #' @param plot_frequencies # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies.
 #'
-#' @param k_Dose Parameter for opponentprocess(): Clearance rates for compartments.
-#' @param k_apk Parameter for opponentprocess(): a-process pharmacokinetic clearance rate.
-#' @param k_bpk Parameter for opponentprocess(): b-process pharmacokinetic clearance rate.
-#' @param k_apd Parameter for opponentprocess(): a-process pharmacodynamic clearance rate.
-#' @param k_bpd Parameter for opponentprocess(): b-process pharmacodynamic clearance rate.
-#' @param k_H Parameter for opponentprocess(): Clearance rate for hedonic pharmacodynamic compartment.
-#' @param lambda_a Parameter for opponentprocess(): Pharmacodynamic constant for a-process magnitude, based on Kahneman/Tversky's utility function.
-#' @param gamma_a Parameter for opponentprocess(): Pharmacodynamic constant for a-process curvature, based on Kahneman/Tversky's utility function.
-#' @param lambda_b Parameter for opponentprocess(): Pharmacodynamic constant for b-process magnitude, based on Kahneman/Tversky's utility function.
-#' @param gamma_b Parameter for opponentprocess(): Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.
-#' @param infuse Parameter for opponentprocess(): Infusion duration.
+#' @param k_Dose Clearance rates for compartments.
+#' @param k_apk a-process pharmacokinetic clearance rate.
+#' @param k_bpk b-process pharmacokinetic clearance rate.
+#' @param k_apd a-process pharmacodynamic clearance rate.
+#' @param k_bpd b-process pharmacodynamic clearance rate.
+#' @param k_H Clearance rate for hedonic pharmacodynamic compartment.
+#' @param lambda_a Pharmacodynamic constant for a-process magnitude, based on Kahneman/Tversky's utility function.
+#' @param gamma_a Pharmacodynamic constant for a-process curvature, based on Kahneman/Tversky's utility function.
+#' @param lambda_b Pharmacodynamic constant for b-process magnitude, based on Kahneman/Tversky's utility function.
+#' @param gamma_b Pharmacodynamic constant for b-process curvature, based on Kahneman/Tversky's utility function.
+#' @param infuse Infusion duration.
 #' @param verbose # Print output to console.
 #'
 #' @return A Bode magnitude plot.
@@ -234,7 +238,7 @@ opponentprocess <- function(
 #' @examples
 #' bode_plot()
 #' bode_plot(gamma_a=0.5, gamma_b=c(0.5, 0.7, 0.9, 1.1), lambda_a=1, lambda_b = 1, k_apk = 0.005, k_bpk = 0.004, freq_interval = 0.0002, multiply=40, plot_frequencies=c(0.0002, 0.006))
-#' bode_plot(ylim=)
+#' bode_plot(ylim=-500)
 #' 
 #' @export
 bode_plot <- function(

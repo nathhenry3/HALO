@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim_functions.R
 \name{bode_plot}
 \alias{bode_plot}
-\title{bode_plot() creates a Bode plot using opponentprocess() for a range of dose frequencies, allowing us to plot the relationship between dose frequency and the integral of hedonic outcomes, and to determine whether this relationship is hormetic.}
+\title{bode_plot()}
 \usage{
 bode_plot(
   freq_interval = 2e-04,

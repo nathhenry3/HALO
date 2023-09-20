@@ -2,27 +2,26 @@
 format: gfm
 ---
 
-# BPos
+# HALO
+#### Nathan Henry, 2023
 
-This R package provides functions for simulating repeated opponent processes using the behavioral posology paradigm and for using Bode plots to analyze the healthy hormetic limits of behaviors.
+This package allows you to run behavioral posology simulations using the HALO paradigm (Hormetic Alignment via Opponent Processes), in order to simulate the healthy limits of behaviors that have opponent process dynamics.
 
-For more information, refer to the paper: LINK TO PAPER
+The HALO paradigm combines the concepts of allostasis, hormesis, opponent processes, and prospect theory. For more information, refer to the paper by Henry et al. (LINK HERE). 
 
 ## Installation
 
-You can install the bpos package by running the following code in R or RStudio:
+You can install the HALO package by running the following code in R or RStudio:
 
 ```{r}
 
-# First, install and load devtools package
+# Install and load devtools package
 install.packages('devtools')
 library(devtools)
 
-# Install and load bpos package from GitHub
+# Install and load HALO package from GitHub
 install_github('nathhenry3/HALO')
 library(HALO)
-
-###   CHANGE ABOVE PACKAGE NAME LATER
 
 ```
 
@@ -159,7 +158,7 @@ bode_plot(k_bpk=c(0.01, 0.02, 0.03), colorscheme=4)
 
 ```
 
-You can also extend the Bode plot:
+You can extend the Bode plot:
 
 ```{r}
 #| fig-width: 9
@@ -185,8 +184,8 @@ bode_plot(addl = 40)
 
 ```
 
-For more usage examples and detailed explanations, please refer to the package documentation by using the 'help()' function in R. 
+For more usage examples and detailed explanations, please refer to the package documentation by using the 'help()' function in R.
 
 ## License
 
-This package is released under the MIT License.
+This package is released under the MIT License, and is free to use and share.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim_functions.R
 \name{opponentprocess}
 \alias{opponentprocess}
-\title{opponentprocess() simulates the opponent process model. It can be run by itself for diagnostic purposes (for example, calculating the area under the hedonic curve, or plotting either the opponent processes or utility function), but in general use this should be called through bode_plot().}
+\title{opponentprocess()}
 \usage{
 opponentprocess(
   ii = 10000,

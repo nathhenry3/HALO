@@ -1,10 +1,11 @@
-Package: bpos
+Package: HALO
 Type: Package
-Title: A package for behavioral posology simulations
+Title: Hormetic Alignment via Opponent Processes
 Version: 0.1.0.0
 Authors@R:
   person("Nathan", "Henry", , "nathhenry3@gmail.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-4299-1442"))
-Description: Still need to add a description...
+Description: A package for performing behavioral posology simulations using the HALO paradigm (Hormetic Alignment via Opponent
+  Processes). This model can be used to simulate the healthy limits of behaviors that have opponent process dynamics.
 Imports:
   dplyr (>= 1.0.0),
   tibble (>= 3.0.0),
