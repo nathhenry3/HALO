@@ -213,7 +213,7 @@ opponentprocess <- function(
 #' @param sim_length Time length of PKPD simulation for opponentprocess(), in minutes.
 #' @param addl Number of additional doses for opponentprocess() - essentially infinite.
 #' @param plot_utility Whether to calculate the graphs for biophase for opponentprocess() or not.
-#' @param join_plots_opponent Whether to join plots as subplots or plot them separately in opponentprocess().
+#' @param join_plots Whether to join plots as subplots or plot them separately in opponentprocess().
 #' @param plot_frequencies # If the dose frequency (or frequencies) are in plot_frequencies, then create plots for those frequencies.
 #'
 #' @param k_Dose Parameter for opponentprocess(): Clearance rates for compartments.
@@ -275,7 +275,7 @@ bode_plot <- function(
       
       loop_list <- opponentprocess(
         ii = dose_interval[2],
-        join_plots = join_plots_opponent,
+        join_plots = join_plots,
         verbose = verbose,
         plot_frequencies = plot_frequencies,
         colorscheme = colorscheme,
@@ -306,7 +306,7 @@ bode_plot <- function(
       loop_list <- opponentprocess(
         ii = dose_interval[i],
         plot_utility = TRUE,
-        join_plots = join_plots_opponent,
+        join_plots = join_plots,
         verbose = verbose,
         plot_frequencies = plot_frequencies,
         colorscheme = colorscheme,
