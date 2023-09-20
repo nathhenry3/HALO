@@ -6,15 +6,23 @@ format: gfm
 
 This R package provides functions for simulating repeated opponent processes using the behavioral posology paradigm and for using Bode plots to analyze the healthy hormetic limits of behaviors.
 
+For more information, refer to the paper: LINK TO PAPER
+
 ## Installation
 
 You can install the bpos package by running the following code in R or RStudio:
 
 ```{r}
 
-# install.packages("bpos")
-# library(bpos)
-## REPLACE WITH GITHUB NAME
+# First, install and load devtools package
+install.packages('devtools')
+library(devtools)
+
+# Install and load bpos package from GitHub
+install_github('nathhenry3/HALO')
+library(HALO)
+
+###   CHANGE ABOVE PACKAGE NAME LATER
 
 ```
 
