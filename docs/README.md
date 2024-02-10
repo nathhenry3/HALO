@@ -3,6 +3,12 @@
 
 #### Nathan Henry, 2023
 
+NOTE: This package has been deprecated as it is based on a slightly 
+incorrect version of utility theory. We have since replaced this with
+our PK/PD model of opponent processes, which is less prescriptive and
+thus more accurate and flexible. However, I have left this here as an
+example of my package-coding ability. 
+
 This package allows you to run behavioral posology simulations using the
 HALO paradigm (Hormetic Alignment via Opponent Processes), in order to
 simulate the healthy limits of behaviors that have opponent process
