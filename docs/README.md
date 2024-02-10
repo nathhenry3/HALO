@@ -3,8 +3,8 @@
 
 #### Nathan Henry, 2023
 
-NOTE: This package has been deprecated as it is based on a slightly 
-incorrect version of utility theory. We have since replaced this with
+NOTE: This prototype package has been deprecated as it relies on a
+minor violation of utility theory. We have since replaced this with
 our PK/PD model of opponent processes, which is less prescriptive and
 thus more accurate and flexible. However, I have left this here as an
 example of my package-coding ability. 
