@@ -16,7 +16,7 @@ dynamics.
 
 The HALO paradigm combines the concepts of allostasis, hormesis,
 opponent processes, and prospect theory. For more information, refer to
-the paper by Henry et al. (LINK HERE).
+the ([https://arxiv.org/abs/2402.07462](paper by Henry et al.))
 
 ## Installation
 
