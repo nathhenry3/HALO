@@ -14,8 +14,8 @@ HALO paradigm (Hormetic Alignment via Opponent Processes), in order to
 simulate the healthy limits of behaviors that have opponent process
 dynamics.
 
-The HALO paradigm combines the concepts of allostasis, hormesis,
-opponent processes, and prospect theory. For more information, refer to
+The updated HALO paradigm combines the concepts of allostasis, hormesis,
+opponent processes, and utility theory. For more information, refer to
 the [paper by Henry et al.](https://arxiv.org/abs/2402.07462)
 
 ## Installation
